@@ -1,0 +1,5 @@
+[
+  {"name": "category", "type": "STRING"},
+  {"name": "criterion", "type": "STRING"},
+  {"name": "description", "type": "STRING"}
+]

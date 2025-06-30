@@ -1,0 +1,5 @@
+Flask==2.3.2
+google-cloud-bigquery==3.23.0
+google-cloud-service-usage
+gunicorn
+flask-restx # Add this line

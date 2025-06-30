@@ -1,0 +1,6 @@
+config:
+  wif_setup:gcp_project_id: production-e9f48c
+  wif_setup:gcp_project_number: "281304798313"
+  wif_setup:github_organization: cggaldes
+  wif_setup:github_repository: cloud-api-compliance-hub
+  wif_setup:cloud_run_compute_sa_email: 281304798313-compute@developer.gserviceaccount.com

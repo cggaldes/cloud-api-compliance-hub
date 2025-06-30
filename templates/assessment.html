@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud API Compliance Hub - {{ api_name }} Assessment - {{ platform.upper() }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
+        .container { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+        h1 { color: #0056b3; }
+        h2 { color: #0056b3; border-bottom: 2px solid #eee; padding-bottom: 5px; margin-top: 20px; }
+        .endorsement { font-size: 1.1em; font-weight: bold; margin-bottom: 15px; }
+        .endorsed { color: green; }
+        .not-endorsed { color: red; }
+        .search-container { margin-bottom: 20px; }
+        .search-container input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+        th { background-color: #f2f2f2; color: #555; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        tr:hover { background-color: #f1f1f1; }
+        .supported-true { color: green; font-weight: bold; }
+        .supported-false { color: red; font-weight: bold; }
+        .button-group { margin-top: 20px; }
+        .button-group a { background-color: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; margin-right: 10px; }
+        .button-group a:hover { background-color: #0056b3; }
+        .button-group a.secondary { background-color: #6c757d; }
+        .button-group a.secondary:hover { background-color: #5a6268; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>API Assessment Results</h1>
+        <h2>{{ api_name }} on {{ platform.upper() }}</h2>
+
+        <div class="endorsement">
+            Endorsed for use: <span class="{{ 'endorsed' if is_endorsed else 'not-endorsed' }}">{{ 'Yes' if is_endorsed else 'No' }}</span>
+        </div>
+
+        <div class="search-container">
+            <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search for categories or criteria...">
+        </div>
+
+        <table id="assessmentTable">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Criteria Name</th>
+                    <th>Is Supported</th>
+                    <th>Notes</th>
+                    <th>Caveats</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for result in assessment_results %}
+                <tr>
+                    <td>{{ result.criterion_category }}</td>
+                    <td>{{ result.criterion_name }}</td>
+                    <td class="{{ 'supported-true' if result.is_supported else 'supported-false' }}">{{ 'True' if result.is_supported else 'False' }}</td>
+                    <td>{{ result.notes }}</td>
+                    <td>{{ result.caveats }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="button-group">
+            <a href="/platforms/{{ platform }}/apis">Back to API List</a>
+            <a href="/" class="secondary">Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        function filterTable() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("searchInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("assessmentTable");
+            tr = table.getElementsByTagName("tr");
+
+            for (i = 1; i < tr.length; i++) { // Start from 1 to skip the header row
+                tr[i].style.display = "none"; // Hide the row by default
+                td = tr[i].getElementsByTagName("td");
+                // Check columns 0 (Category), 1 (Criteria Name), 3 (Notes), 4 (Caveats) for search match
+                if (td[0] && td[0].textContent.toUpperCase().indexOf(filter) > -1 ||
+                    td[1] && td[1].textContent.toUpperCase().indexOf(filter) > -1 ||
+                    td[3] && td[3].textContent.toUpperCase().indexOf(filter) > -1 ||
+                    td[4] && td[4].textContent.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = ""; // Show the row if a match is found
+                }
+            }
+        }
+    </script>
+</body>
+</html>

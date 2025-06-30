@@ -1,0 +1,9 @@
+[
+  {"name": "api_name", "type": "STRING"},
+  {"name": "api_domain_name", "type": "STRING"},
+  {"name": "platform", "type": "STRING"},
+  {"name": "criterion_category", "type": "STRING"},
+  {"name": "criterion_name", "type": "STRING"},
+  {"name": "assessment_answer", "type": "STRING"},
+  {"name": "notes", "type": "STRING"}
+]

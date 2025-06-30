@@ -1,0 +1,26 @@
+{"category": "Data Residency & Sovereignty", "criterion": "Region Selection", "description": "Ability to deploy API services and store data in specific Google Cloud regions to meet data residency requirements."}
+{"category": "Data Residency & Sovereignty", "criterion": "Data Location Transparency", "description": "Clear documentation and mechanisms to verify data storage and processing locations."}
+{"category": "Data Residency & Sovereignty", "criterion": "Cross-Region Data Transfer Controls", "description": "Controls to restrict data transfer outside of specified regions."}
+{"category": "Encryption", "criterion": "Encryption in Transit", "description": "Mandatory strong TLS/SSL (e.g., TLS 1.2+) with configurable minimum versions and cipher suites."}
+{"category": "Encryption", "criterion": "Encryption at Rest", "description": "Default encryption for all stored data, with support for Google-managed (GMEK), Customer-managed (CMEK), and Customer-supplied (CSEK) encryption keys, including key rotation and granular access controls."}
+{"category": "Authentication & Authorization", "criterion": "IAM Integration", "description": "Granular access control via Google Cloud IAM roles and policies."}
+{"category": "Authentication & Authorization", "criterion": "Service Account Support", "description": "Use of service accounts for programmatic access with least privilege."}
+{"category": "Authentication & Authorization", "criterion": "MFA", "description": "Support for Multi-Factor Authentication for administrative access."}
+{"category": "Authentication & Authorization", "criterion": "Standard Protocols", "description": "Support for OAuth 2.0 / OpenID Connect."}
+{"category": "Authentication & Authorization", "criterion": "API Key Management", "description": "Secure generation, rotation, and revocation of API keys."}
+{"category": "Network Security", "criterion": "Private Access", "description": "Support for private connectivity (e.g., Private Service Connect, VPC Service Controls)."}
+{"category": "Network Security", "criterion": "Firewall Rules", "description": "Ability to configure ingress/egress firewall rules."}
+{"category": "Network Security", "criterion": "DDoS Protection", "description": "Built-in or configurable DDoS protection (e.g., Cloud Armor)."}
+{"category": "Network Security", "criterion": "API Gateway Integration", "description": "Centralized traffic management and security policies via API Gateway."}
+{"category": "Logging & Monitoring", "criterion": "Audit Logging", "description": "Comprehensive audit trails for all API calls and configuration changes."}
+{"category": "Logging & Monitoring", "criterion": "Access Logging", "description": "Detailed access logs for API requests."}
+{"category": "Logging & Monitoring", "criterion": "Monitoring & Alerting", "description": "Integration with Cloud Monitoring for real-time metrics and security alerts."}
+{"category": "Logging & Monitoring", "criterion": "Log Retention", "description": "Configurable log retention policies."}
+{"category": "Vulnerability Management & Patching", "criterion": "Security Updates", "description": "Google's commitment to regular patching and updates."}
+{"category": "Vulnerability Management & Patching", "criterion": "Vulnerability Scanning", "description": "Evidence of regular vulnerability scanning and penetration testing."}
+{"category": "Compliance & Certifications", "criterion": "Industry Certifications", "description": "Adherence to relevant industry standards (e.g., ISO 27001, SOC 2, HIPAA, GDPR)."}
+{"category": "Compliance & Certifications", "criterion": "Compliance Documentation", "description": "Availability of compliance reports."}
+{"category": "Data Loss Prevention (DLP)", "criterion": "Sensitive Data Scanning", "description": "Integration with DLP services."}
+{"category": "Data Loss Prevention (DLP)", "criterion": "Data Masking/Redaction", "description": "Ability to mask or redact sensitive information."}
+{"category": "Secure Development Lifecycle (SDL)", "criterion": "API Design Principles", "description": "Adherence to secure API design principles."}
+{"category": "Secure Development Lifecycle (SDL)", "criterion": "Code Review & Testing", "description": "Evidence of secure coding practices and security testing."}

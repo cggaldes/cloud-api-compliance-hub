@@ -1,0 +1,11 @@
+[
+  {"name": "api_name", "type": "STRING"},
+  {"name": "api_domain_name", "type": "STRING"},
+  {"name": "platform", "type": "STRING"},
+  {"name": "is_endorsed", "type": "BOOLEAN"},
+  {"name": "criterion_category", "type": "STRING"},
+  {"name": "criterion_name", "type": "STRING"},
+  {"name": "is_supported", "type": "BOOLEAN"},
+  {"name": "caveats", "type": "STRING"},
+  {"name": "notes", "type": "STRING"}
+]
