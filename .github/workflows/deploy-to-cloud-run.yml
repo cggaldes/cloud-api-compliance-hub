@@ -44,6 +44,5 @@ jobs:
           --image ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REGISTRY_REPO }}/${{ env.SERVICE_NAME }}:latest \
           --platform managed \
           --region ${{ env.REGION }} \
-          --allow-unauthenticated \
           --set-env-vars GOOGLE_CLOUD_PROJECT=${{ env.PROJECT_ID }}
 

@@ -22,16 +22,16 @@ setup:
 	@echo "Creating virtual environment..."
 	python3 -m venv venv
 	@echo "Activating virtual environment and installing Python dependencies..."
-	./venv/bin/pip install -r requirements.txt
+	./venv/bin/pip install -r app/requirements.txt
 
 start:
 	@echo "Starting the Flask server locally..."
 	export GOOGLE_CLOUD_PROJECT="$(PROJECT_ID)" && \
-	./venv/bin/python app.py
+	./venv/bin/python app/app.py
 
 build:
 	@echo "Building Docker image for Cloud Run and pushing to Artifact Registry..."
-	gcloud builds submit --tag $(REGION)-docker.pkg.dev/$(PROJECT_ID)/$(ARTIFACT_REGISTRY_REPO)/$(SERVICE_NAME):latest .
+	gcloud builds submit --tag $(REGION)-docker.pkg.dev/$(PROJECT_ID)/$(ARTIFACT_REGISTRY_REPO)/$(SERVICE_NAME):latest . --source=app
 
 deploy:
 	@echo "Cloud Run deployment is now managed by Pulumi."

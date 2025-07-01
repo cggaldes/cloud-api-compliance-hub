@@ -1,7 +1,7 @@
 import json
 
-input_file = './api_assessments_export_lower.json'
-output_file = './api_assessments_transformed.json'
+input_file = './data/api_assessments_export_lower.json'
+output_file = './data/api_assessments_transformed.json'
 
 transformed_data = []
 

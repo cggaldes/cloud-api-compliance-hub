@@ -1,6 +1,6 @@
 import json
 
-input_file = './api_assessments_export_lower.json'
+input_file = './data/api_assessments_export_lower.json'
 
 unique_answers = set()
 

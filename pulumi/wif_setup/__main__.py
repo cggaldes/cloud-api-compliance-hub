@@ -29,6 +29,13 @@ cloud_run_compute_sa_email = f"{gcp_project_number}-compute@developer.gserviceac
 
 # --- Resource Definitions ---
 
+# 0. Enable the Cloud Run API
+cloud_run_api = gcp.projects.Service("cloud-run-api-enablement",
+    service="run.googleapis.com",
+    disable_on_destroy=False, # Keep the API enabled even after 'pulumi destroy'
+    project=gcp_project_id
+)
+
 # 1. Create an Artifact Registry Repository (if it doesn't exist)
 artifact_repo = gcp.artifactregistry.Repository("cloud-run-repo",
     location=cloud_run_region,
@@ -60,12 +67,12 @@ gcp.projects.IAMMember("cloud-run-admin-binding",
     member=github_actions_sa.member
 )
 
-# # Grant permission to impersonate the Cloud Run runtime service account (for BigQuery access)
-# gcp.serviceaccount.IAMMember("cloud-run-sa-user-binding",
-#     service_account_id=cloud_run_compute_sa_email,
-#     role="roles/iam.serviceAccountUser",
-#     member=github_actions_sa.member
-# )
+# Grant permission to impersonate the Cloud Run runtime service account (for BigQuery access)
+gcp.serviceaccount.IAMMember("cloud-run-sa-user-binding",
+    service_account_id=pulumi.Output.concat("projects/", gcp_project_id, "/serviceAccounts/", cloud_run_compute_sa_email),
+    role="roles/iam.serviceAccountUser",
+    member=github_actions_sa.member
+)
 
 # 4. Create an IAM Workload Identity Pool
 github_pool = gcp.iam.WorkloadIdentityPool("github-pool",
@@ -109,50 +116,49 @@ gcp.serviceaccount.IAMMember("github-actions-wif-binding",
 )
 
 # 7. Deploy Cloud Run Service
-# cloud_run_service = gcp.cloudrun.Service("api-assessment-service",
-#     location=cloud_run_region,
-#     name=cloud_run_service_name,
-#     project=gcp_project_id,
-#     template=gcp.cloudrun.ServiceTemplateArgs(
-#         spec=gcp.cloudrun.ServiceTemplateSpecArgs(
-#             containers=[gcp.cloudrun.ServiceTemplateSpecContainerArgs(
-#                 image=pulumi.Output.concat(
-#                     cloud_run_region, ".docker.pkg.dev/", gcp_project_id, "/",
-#                     artifact_repo.repository_id, "/",
-#                     cloud_run_service_name, ":latest"
-#                 ),
-#                 envs=[
-#                     gcp.cloudrun.ServiceTemplateSpecContainerEnvArgs(
-#                         name="GOOGLE_CLOUD_PROJECT",
-#                         value=gcp_project_id,
-#                     ),
-#                     gcp.cloudrun.ServiceTemplateSpecContainerEnvArgs(
-#                         name="PORT",
-#                         value="8080", # Cloud Run expects the app to listen on PORT env var
-#                     ),
-#                 ],
-#             )],
-#             service_account_name=cloud_run_compute_sa_email, # Explicitly set the service account
-#         ),
-#     ),
-#     traffic=[gcp.cloudrun.ServiceTrafficArgs(
-#         percent=100,
-#         latest_revision=True,
-#     )],
-#     autogenerate_revision_name=True,
-#     opts=pulumi.ResourceOptions(depends_on=[artifact_repo]) # Ensure repo is created first
-# )
+cloud_run_service = gcp.cloudrun.Service("api-assessment-service",
+    location=cloud_run_region,
+    name=cloud_run_service_name,
+    project=gcp_project_id,
+    template=gcp.cloudrun.ServiceTemplateArgs(
+        spec=gcp.cloudrun.ServiceTemplateSpecArgs(
+            containers=[gcp.cloudrun.ServiceTemplateSpecContainerArgs(
+                image=pulumi.Output.concat(
+                    cloud_run_region, "-docker.pkg.dev/", gcp_project_id, "/",
+                    artifact_repo.repository_id, "/",
+                    cloud_run_service_name, ":latest"
+                ),
+                envs=[
+                    gcp.cloudrun.ServiceTemplateSpecContainerEnvArgs(
+                        name="GOOGLE_CLOUD_PROJECT",
+                        value=gcp_project_id,
+                    ),
+                ],
+            )],
+            service_account_name=cloud_run_compute_sa_email, # Explicitly set the service account
+        ),
+    ),
+    traffics=[gcp.cloudrun.ServiceTrafficArgs(
+        percent=100,
+        latest_revision=True,
+    )],
+    autogenerate_revision_name=True,
+    opts=pulumi.ResourceOptions(depends_on=[
+        artifact_repo,
+        cloud_run_api # Explicitly depend on the API being enabled
+    ])
+)
 
-# # Allow unauthenticated access to the Cloud Run service
-# gcp.cloudrun.IamMember("api-assessment-service-invoker",
-#     service=cloud_run_service.name,
-#     location=cloud_run_region,
-#     role="roles/run.invoker",
-#     member="allUsers",
-#     project=gcp_project_id
-# )
+# Allow unauthenticated access to the Cloud Run service
+gcp.cloudrun.IamMember("api-assessment-service-invoker",
+    service=cloud_run_service.name,
+    location=cloud_run_region,
+    role="roles/run.invoker",
+    member="allUsers",
+    project=gcp_project_id
+)
 
 # --- Outputs for GitHub Secrets and Testing ---
 pulumi.export("wif_provider_name", github_provider.name)
 pulumi.export("github_actions_service_account_email", github_actions_sa.email)
-# pulumi.export("cloud_run_url", cloud_run_service.statuses[0].url)
+pulumi.export("cloud_run_url", cloud_run_service.statuses[0].url)
