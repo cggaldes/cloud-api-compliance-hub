@@ -3,93 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloud API Compliance Hub - {{ api_name }} Assessment - {{ platform.upper() }}</title>
+    <title>Cloud API Compliance Hub - {{ api_name }} Assessment</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    {% include 'google_analytics.html' %}
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
-        .container { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
-        h1 { color: #0056b3; }
-        h2 { color: #0056b3; border-bottom: 2px solid #eee; padding-bottom: 5px; margin-top: 20px; }
-        .endorsement { font-size: 1.1em; font-weight: bold; margin-bottom: 15px; }
-        .endorsed { color: green; }
-        .not-endorsed { color: red; }
-        .search-container { margin-bottom: 20px; }
-        .search-container input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
-        th { background-color: #f2f2f2; color: #555; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
-        tr:hover { background-color: #f1f1f1; }
-        .supported-true { color: green; font-weight: bold; }
-        .supported-false { color: red; font-weight: bold; }
-        .button-group { margin-top: 20px; }
-        .button-group a { background-color: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; margin-right: 10px; }
-        .button-group a:hover { background-color: #0056b3; }
-        .button-group a.secondary { background-color: #6c757d; }
-        .button-group a.secondary:hover { background-color: #5a6268; }
+        .supported-true { color: #198754; font-weight: bold; }
+        .supported-false { color: #dc3545; font-weight: bold; }
+        .table-responsive { max-height: 60vh; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>API Assessment Results</h1>
-        <h2>{{ api_name }} on {{ platform.upper() }}</h2>
-
-        <div class="endorsement">
-            Endorsed for use: <span class="{{ 'endorsed' if is_endorsed else 'not-endorsed' }}">{{ 'Yes' if is_endorsed else 'No' }}</span>
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+            <div>
+                <h1 class="mb-1">{{ api_name }}</h1>
+                <p class="text-muted">Platform: {{ platform.upper() }}</p>
+            </div>
+            <div class="text-end">
+                <h5 class="mb-0">Endorsed for use: 
+                    <span class="badge {{ 'bg-success' if is_endorsed else 'bg-danger' }}">
+                        {{ 'Yes' if is_endorsed else 'No' }}
+                    </span>
+                </h5>
+            </div>
         </div>
 
-        <div class="search-container">
-            <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search for categories or criteria...">
+        <div class="mb-4">
+            <input type="text" id="searchInput" class="form-control" onkeyup="filterTable()" placeholder="Search criteria, notes, or caveats...">
         </div>
 
-        <table id="assessmentTable">
-            <thead>
-                <tr>
-                    <th>Category</th>
-                    <th>Criteria Name</th>
-                    <th>Is Supported</th>
-                    <th>Notes</th>
-                    <th>Caveats</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for result in assessment_results %}
-                <tr>
-                    <td>{{ result.criterion_category }}</td>
-                    <td>{{ result.criterion_name }}</td>
-                    <td class="{{ 'supported-true' if result.is_supported else 'supported-false' }}">{{ 'True' if result.is_supported else 'False' }}</td>
-                    <td>{{ result.notes }}</td>
-                    <td>{{ result.caveats }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover" id="assessmentTable">
+                <thead class="table-light sticky-top">
+                    <tr>
+                        <th>Category</th>
+                        <th>Criteria Name</th>
+                        <th>Supported</th>
+                        <th>Notes</th>
+                        <th>Caveats</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if assessment_results %}
+                        {% for result in assessment_results %}
+                        <tr>
+                            <td>{{ result.criterion_category }}</td>
+                            <td>{{ result.criterion_name }}</td>
+                            <td class="{{ 'supported-true' if result.is_supported else 'supported-false' }}">{{ result.is_supported }}</td>
+                            <td>{{ result.notes }}</td>
+                            <td>{{ result.caveats }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center">{{ message | default('No assessment results found.', true) }}</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
 
-        <div class="button-group">
-            <a href="/platforms/{{ platform }}/apis">Back to API List</a>
-            <a href="/" class="secondary">Back to Home</a>
+        <div class="mt-4">
+            <a href="/platforms/{{ platform }}/apis" class="btn btn-primary">Back to API List</a>
+            <a href="/" class="btn btn-secondary">Back to Home</a>
         </div>
     </div>
 
     <script>
         function filterTable() {
-            var input, filter, table, tr, td, i, txtValue;
-            input = document.getElementById("searchInput");
-            filter = input.value.toUpperCase();
-            table = document.getElementById("assessmentTable");
-            tr = table.getElementsByTagName("tr");
+            let input = document.getElementById("searchInput");
+            let filter = input.value.toUpperCase();
+            let table = document.getElementById("assessmentTable");
+            let tr = table.getElementsByTagName("tr");
 
-            for (i = 1; i < tr.length; i++) { // Start from 1 to skip the header row
-                tr[i].style.display = "none"; // Hide the row by default
-                td = tr[i].getElementsByTagName("td");
-                // Check columns 0 (Category), 1 (Criteria Name), 3 (Notes), 4 (Caveats) for search match
-                if (td[0] && td[0].textContent.toUpperCase().indexOf(filter) > -1 ||
-                    td[1] && td[1].textContent.toUpperCase().indexOf(filter) > -1 ||
-                    td[3] && td[3].textContent.toUpperCase().indexOf(filter) > -1 ||
-                    td[4] && td[4].textContent.toUpperCase().indexOf(filter) > -1) {
-                    tr[i].style.display = ""; // Show the row if a match is found
+            for (let i = 1; i < tr.length; i++) { // Start from 1 to skip header
+                tr[i].style.display = "none"; // Hide by default
+                let tds = tr[i].getElementsByTagName("td");
+                let textContent = "";
+                for (let j = 0; j < tds.length; j++) {
+                    textContent += (tds[j].textContent || tds[j].innerText) + " ";
+                }
+                
+                if (textContent.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
                 }
             }
         }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

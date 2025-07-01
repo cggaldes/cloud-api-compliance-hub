@@ -4,58 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cloud API Compliance Hub - {{ platform.upper() }} API List</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; color: #333; }
-        .container { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
-        h1 { color: #0056b3; margin-bottom: 25px; }
-        .search-container { margin-bottom: 20px; }
-        .search-container input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
-        ul { list-style-type: none; padding: 0; }
-        li { margin-bottom: 10px; background-color: #e9ecef; padding: 10px; border-radius: 5px; }
-        li a { text-decoration: none; color: #007bff; font-weight: bold; font-size: 1.1em; }
-        li a:hover { text-decoration: underline; }
-        .back-button { margin-top: 20px; display: inline-block; background-color: #6c757d; color: white; padding: 10px 15px; border-radius: 5px; text-decoration: none; }
-        .back-button:hover { background-color: #5a6268; }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    {% include 'google_analytics.html' %}
 </head>
 <body>
-    <div class="container">
-        <h1>Available APIs for {{ platform.upper() }}</h1>
+    <div class="container mt-5">
+        <h1 class="mb-4">Available APIs for {{ platform.upper() }}</h1>
 
-        <div class="search-container">
-            <input type="text" id="searchInput" onkeyup="filterList()" placeholder="Search for API names or domains...">
+        <div class="mb-4">
+            <input type="text" id="searchInput" class="form-control" onkeyup="filterList()" placeholder="Search for API names or domains...">
         </div>
 
         {% if apis %}
-            <ul id="apiList">
+            <div class="list-group" id="apiList">
                 {% for api in apis %}
-                    <li><a href="/platforms/{{ platform }}/apis/{{ api.api_domain_name }}">{{ api.api_name }} ({{ api.api_domain_name }})</a></li>
+                    <a href="/platforms/{{ platform }}/apis/{{ api.api_domain_name }}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">{{ api.api_name }}</h5>
+                        </div>
+                        <p class="mb-1 text-muted">{{ api.api_domain_name }}</p>
+                    </a>
                 {% endfor %}
-            </ul>
+            </div>
         {% else %}
-            <p>{{ message }}</p>
+            <div class="alert alert-warning" role="alert">
+                {{ message | default('No APIs found for this platform.', true) }}
+            </div>
         {% endif %}
-        <a href="/" class="back-button">Back to Cloud Provider Selection</a>
+
+        <a href="/" class="btn btn-secondary mt-4">Back to Home</a>
     </div>
 
     <script>
         function filterList() {
-            var input, filter, ul, li, a, i, txtValue;
-            input = document.getElementById("searchInput");
-            filter = input.value.toUpperCase();
-            ul = document.getElementById("apiList");
-            li = ul.getElementsByTagName("li");
+            let input = document.getElementById("searchInput");
+            let filter = input.value.toUpperCase();
+            let listGroup = document.getElementById("apiList");
+            let items = listGroup.getElementsByTagName("a");
 
-            for (i = 0; i < li.length; i++) {
-                a = li[i].getElementsByTagName("a")[0];
-                txtValue = a.textContent || a.innerText;
+            for (let i = 0; i < items.length; i++) {
+                let h5 = items[i].getElementsByTagName("h5")[0];
+                let p = items[i].getElementsByTagName("p")[0];
+                let txtValue = (h5.textContent || h5.innerText) + " " + (p.textContent || p.innerText);
                 if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    li[i].style.display = "";
+                    items[i].style.display = "";
                 } else {
-                    li[i].style.display = "none";
+                    items[i].style.display = "none";
                 }
             }
         }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
