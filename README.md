@@ -102,26 +102,34 @@ As of now, the application has the following capabilities:
     ```
     The API will start and be accessible at `http://0.0.0.0:8080`.
 
-### API Endpoints for Testing:
+### API Endpoints
 
-**Web UI Endpoints (for browser access):**
+The application exposes both a web interface and a RESTful API for programmatic access.
 
-*   **Landing Page:**
-    `http://0.0.0.0:8080/`
+#### Web UI Endpoints (for browser access)
+
+*   **Landing Page:** `/`
+*   **List APIs for a Platform:** `/platforms/{platform_name}/apis`
+    *   Example: `/platforms/gcp/apis`
+*   **Get API Assessment by Domain Name:** `/platforms/{platform_name}/apis/{api_domain_name}`
+    *   Example: `/platforms/gcp/apis/storage.googleapis.com`
+
+#### REST API Endpoints (v1)
+
+All REST API endpoints are prefixed with `/api/v1`.
+
+*   **Swagger UI (API Documentation):** `/api/v1/docs`
+    *   This provides an interactive interface to explore and test all available API endpoints.
 
 *   **List APIs for a Platform:**
-    `http://0.0.0.0:8080/platforms/gcp/apis`
+    *   **Endpoint:** `GET /assessments/platforms/{platform_name}/apis`
+    *   **Description:** Lists all unique API names and their domain names for a given cloud platform.
+    *   **Example:** `GET /api/v1/assessments/platforms/gcp/apis`
 
 *   **Get API Assessment by Domain Name:**
-    `http://0.0.0.0:8080/platforms/gcp/apis/storage.googleapis.com`
-
-**REST API Endpoints (for programmatic access - always returns JSON):**
-
-*   **List APIs for a Platform:**
-    `http://0.0.0.0:8080/api/v1/assessments/platforms/gcp/apis`
-
-*   **Get API Assessment by Domain Name:**
-    `http://0.0.0.0:8080/api/v1/assessments/platforms/gcp/apis/storage.googleapis.com`
+    *   **Endpoint:** `GET /assessments/platforms/{platform_name}/apis/{api_domain_name}`
+    *   **Description:** Retrieves all assessment results for a specific API on a given cloud platform.
+    *   **Example:** `GET /api/v1/assessments/platforms/gcp/apis/storage.googleapis.com`
 
 ## 6. Contribution Guide
 
