@@ -162,3 +162,23 @@ gcp.cloudrun.IamMember("api-assessment-service-invoker",
 pulumi.export("wif_provider_name", github_provider.name)
 pulumi.export("github_actions_service_account_email", github_actions_sa.email)
 pulumi.export("cloud_run_url", cloud_run_service.statuses[0].url)
+
+# 8. Map Custom Domain to Cloud Run Service
+# Assumes the parent domain (christophergaldes.online) is already verified in the GCP project.
+domain_mapping = gcp.cloudrun.DomainMapping("api-assessment-domain-mapping",
+    name="apicompliance.christophergaldes.online",
+    location=cloud_run_region,
+    project=gcp_project_id,
+    metadata=gcp.cloudrun.DomainMappingMetadataArgs(
+        namespace=gcp_project_id,
+    ),
+    spec=gcp.cloudrun.DomainMappingSpecArgs(
+        route_name=cloud_run_service.name,
+    ),
+    opts=pulumi.ResourceOptions(depends_on=[cloud_run_service])
+)
+
+# Export the DNS records needed to point your domain to the Cloud Run service.
+pulumi.export("dns_records_for_custom_domain", domain_mapping.statuses.apply(
+    lambda statuses: [r.rrdata for r in statuses[0].resource_records] if statuses else "No records available yet. Run 'pulumi refresh' after a few minutes."
+))
