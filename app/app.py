@@ -1,9 +1,22 @@
-from flask import Flask, jsonify, request, render_template, redirect, url_for
-from flask_restx import Api, Resource, fields, reqparse, abort # Added Api, Resource, fields, reqparse, abort
+from flask import Flask, jsonify, request, render_template, redirect, url_for, send_from_directory
+from flask_restx import Api, Resource, fields, reqparse, abort
 from google.cloud import bigquery
 import os
 
-app = Flask(__name__, template_folder='templates')
+app = Flask(__name__, static_folder='static', template_folder='templates')
+
+# Add a new configuration for custom JS
+app.config['SWAGGER_UI_OAUTH_CLIENT_ID'] = ''
+app.config['SWAGGER_UI_OAUTH_REALM'] = '-'
+app.config['SWAGGER_UI_OAUTH_APP_NAME'] = 'Cloud API Compliance Hub'
+app.config['SWAGGER_UI_DOC_EXPANSION'] = 'list'
+app.config['SWAGGER_UI_OPERATION_ID'] = True
+app.config['SWAGGER_UI_REQUEST_DURATION'] = True
+app.config['SWAGGER_UI_SUPPORTED_SUBMIT_METHODS'] = ['get']
+app.config['SWAGGER_UI_HEAD_TEXT'] = """
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TCLLLCG8FT"></script>
+<script src="/static/swagger-ga.js"></script>
+"""
 
 PROJECT_ID = os.getenv('GOOGLE_CLOUD_PROJECT') # Or replace with your project ID if not set as env var
 DATASET_ID = 'api_security_assessment'
@@ -47,6 +60,11 @@ api_assessment_model = api.model('ApiAssessment', {
 })
 
 # --- Web UI Endpoints ---
+
+# Serve static files for swagger GA
+@app.route('/static/<path:path>')
+def send_static(path):
+    return send_from_directory('static', path)
 
 @app.route('/')
 def index():
