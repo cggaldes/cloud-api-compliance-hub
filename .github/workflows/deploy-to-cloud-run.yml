@@ -17,6 +17,7 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: production # Add this line to access environment secrets
     permissions:
       contents: 'read'
       id-token: 'write' # Required for Workload Identity Federation
