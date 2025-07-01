@@ -15,6 +15,7 @@ env:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    environment: production # Add this line to access environment secrets
     permissions:
       contents: 'read'
       id-token: 'write' # Required for Workload Identity Federation
