@@ -30,8 +30,8 @@ start:
 	./venv/bin/python app/app.py
 
 build:
-	@echo "Building Docker image for Cloud Run and pushing to Artifact Registry..."
-	gcloud builds submit --tag $(REGION)-docker.pkg.dev/$(PROJECT_ID)/$(ARTIFACT_REGISTRY_REPO)/$(SERVICE_NAME):latest . --source=app
+	@echo "Building Docker image..."
+	docker build -t $(SERVICE_NAME):latest -f app/Dockerfile .
 
 deploy:
 	@echo "Cloud Run deployment is now managed by Pulumi."
