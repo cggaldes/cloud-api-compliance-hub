@@ -6,6 +6,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    environment: production # Add this line to access environment secrets
     permissions:
       id-token: write   # REQUIRED to get an OIDC token from GitHub
       contents: read
