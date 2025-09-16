@@ -96,11 +96,11 @@ new-assessment:
 	  exit 1; \
 	fi
 	@echo "Generating new assessment files for $(SERVICE_NAME) on $(PLATFORM)..."
-	./venv/bin/python assess_new_api.py --platform "$(PLATFORM)" --service-name "$(SERVICE_NAME)" --domain "$(DOMAIN)"
+	./venv/bin/python scripts/assess_new_api.py --platform "$(PLATFORM)" --service-name "$(SERVICE_NAME)" --domain "$(DOMAIN)"
 
 bq-load:
 	@echo "Loading all assessment data into BigQuery..."
-	./venv/bin/python setup_bq.py
+	./venv/bin/python scripts/setup_bq.py
 
 # --- Pulumi Targets for Workload Identity Federation Setup ---
 

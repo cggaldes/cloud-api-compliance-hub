@@ -8,7 +8,7 @@ import google.generativeai as genai
 
 # --- Configuration ---
 CRITERIA_FILE_PATH = 'data/assessment_criteria.json'
-ASSESSMENTS_OUTPUT_DIR = 'data/assessments'
+ASSESSMENTS_OUTPUT_DIR = 'data/assessments' # Updated output directory
 
 def load_assessment_criteria(file_path):
     """Loads the assessment criteria from a newline-delimited JSON file."""
@@ -100,7 +100,7 @@ def main():
     platform_dir = os.path.join(ASSESSMENTS_OUTPUT_DIR, args.platform.lower())
     os.makedirs(platform_dir, exist_ok=True)
     
-    output_filename = f"{args.service_name.replace(' ', '_').lower()}_assessment.json"
+    output_filename = f"{args.service_name.replace(' ', '_').replace('/', '_').lower()}_assessment.json"
     output_filepath = os.path.join(platform_dir, output_filename)
 
     api_key = os.getenv('GEMINI_API_KEY')
@@ -108,7 +108,7 @@ def main():
     if api_key:
         print("✅ GEMINI_API_KEY found. Generating real assessment...")
         genai.configure(api_key=api_key)
-        model = genai.GenerativeModel('gemini-pro')
+        model = genai.GenerativeModel('gemini-1.5-flash')
         prompt = generate_prompt(args.platform, args.service_name, args.domain, criteria)
         
         try:
