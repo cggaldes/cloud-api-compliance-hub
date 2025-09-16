@@ -35,18 +35,28 @@
         </div>
 
         <div class="row">
-            <div class="col-md-6 mb-4">
-                <a href="/platforms/gcp/apis" class="card-link">
-                    <div class="card text-center h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Google Cloud Platform (GCP)</h5>
-                            <p class="card-text">View security assessments for GCP APIs.</p>
+            {% if platforms %}
+                {% for platform in platforms %}
+                <div class="col-md-4 mb-4">
+                    <a href="{{ url_for('web_list_apis_by_platform', platform_name=platform) }}" class="card-link">
+                        <div class="card text-center h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ platform.upper() }}</h5>
+                                <p class="card-text">View security assessments for {{ platform.upper() }} APIs.</p>
+                            </div>
                         </div>
+                    </a>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-warning" role="alert">
+                        No platforms with assessments are currently available.
                     </div>
-                </a>
-            </div>
-            <div class="col-md-6 mb-4">
-                 <a href="/criteria" class="card-link">
+                </div>
+            {% endif %}
+            <div class="col-md-4 mb-4">
+                 <a href="{{ url_for('list_criteria') }}" class="card-link">
                     <div class="card text-center h-100">
                         <div class="card-body">
                             <h5 class="card-title">Assessment Criteria</h5>

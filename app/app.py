@@ -71,7 +71,21 @@ def index():
     """
     Landing page to select a cloud provider.
     """
-    return render_template('index.html')
+    # Query BigQuery to get a distinct list of platforms
+    query = f"""
+        SELECT DISTINCT platform
+        FROM `{PROJECT_ID}.{DATASET_ID}.{TABLE_ID}`
+        ORDER BY platform
+    """
+    try:
+        query_job = client.query(query)
+        platforms = [row.platform for row in query_job.result()]
+    except Exception as e:
+        # Handle cases where the table might not exist or other BQ errors
+        print(f"Could not query BigQuery for platforms: {e}")
+        platforms = []
+        
+    return render_template('index.html', platforms=platforms)
 
 @app.route('/criteria', methods=['GET']) # New route for criteria list
 def list_criteria():

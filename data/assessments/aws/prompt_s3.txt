@@ -1,0 +1,66 @@
+
+    As a principal cloud security architect, your task is to conduct a security assessment of a specific cloud service based on a predefined set of criteria.
+
+    **Cloud Service Details:**
+    - **Cloud Platform:** AWS
+    - **Service Name:** S3
+    - **Service Domain:** s3.amazonaws.com
+
+    **Assessment Criteria:**
+    - Category: Data Residency & Sovereignty, Criterion: Region Selection, Description: Ability to deploy API services and store data in specific Google Cloud regions to meet data residency requirements.
+- Category: Data Residency & Sovereignty, Criterion: Data Location Transparency, Description: Clear documentation and mechanisms to verify data storage and processing locations.
+- Category: Data Residency & Sovereignty, Criterion: Cross-Region Data Transfer Controls, Description: Controls to restrict data transfer outside of specified regions.
+- Category: Encryption, Criterion: Encryption in Transit, Description: Mandatory strong TLS/SSL (e.g., TLS 1.2+) with configurable minimum versions and cipher suites.
+- Category: Encryption, Criterion: Encryption at Rest, Description: Default encryption for all stored data, with support for Google-managed (GMEK), Customer-managed (CMEK), and Customer-supplied (CSEK) encryption keys, including key rotation and granular access controls.
+- Category: Authentication & Authorization, Criterion: IAM Integration, Description: Granular access control via Google Cloud IAM roles and policies.
+- Category: Authentication & Authorization, Criterion: Service Account Support, Description: Use of service accounts for programmatic access with least privilege.
+- Category: Authentication & Authorization, Criterion: MFA, Description: Support for Multi-Factor Authentication for administrative access.
+- Category: Authentication & Authorization, Criterion: Standard Protocols, Description: Support for OAuth 2.0 / OpenID Connect.
+- Category: Authentication & Authorization, Criterion: API Key Management, Description: Secure generation, rotation, and revocation of API keys.
+- Category: Network Security, Criterion: Private Access, Description: Support for private connectivity (e.g., Private Service Connect, VPC Service Controls).
+- Category: Network Security, Criterion: Firewall Rules, Description: Ability to configure ingress/egress firewall rules.
+- Category: Network Security, Criterion: DDoS Protection, Description: Built-in or configurable DDoS protection (e.g., Cloud Armor).
+- Category: Network Security, Criterion: API Gateway Integration, Description: Centralized traffic management and security policies via API Gateway.
+- Category: Logging & Monitoring, Criterion: Audit Logging, Description: Comprehensive audit trails for all API calls and configuration changes.
+- Category: Logging & Monitoring, Criterion: Access Logging, Description: Detailed access logs for API requests.
+- Category: Logging & Monitoring, Criterion: Monitoring & Alerting, Description: Integration with Cloud Monitoring for real-time metrics and security alerts.
+- Category: Logging & Monitoring, Criterion: Log Retention, Description: Configurable log retention policies.
+- Category: Vulnerability Management & Patching, Criterion: Security Updates, Description: Google's commitment to regular patching and updates.
+- Category: Vulnerability Management & Patching, Criterion: Vulnerability Scanning, Description: Evidence of regular vulnerability scanning and penetration testing.
+- Category: Compliance & Certifications, Criterion: Industry Certifications, Description: Adherence to relevant industry standards (e.g., ISO 27001, SOC 2, HIPAA, GDPR).
+- Category: Compliance & Certifications, Criterion: Compliance Documentation, Description: Availability of compliance reports.
+- Category: Data Loss Prevention (DLP), Criterion: Sensitive Data Scanning, Description: Integration with DLP services.
+- Category: Data Loss Prevention (DLP), Criterion: Data Masking/Redaction, Description: Ability to mask or redact sensitive information.
+- Category: Secure Development Lifecycle (SDL), Criterion: API Design Principles, Description: Adherence to secure API design principles.
+- Category: Secure Development Lifecycle (SDL), Criterion: Code Review & Testing, Description: Evidence of secure coding practices and security testing.
+
+
+    **Instructions:**
+    For each criterion listed above, evaluate the service and provide a detailed assessment. Your response must be a series of newline-delimited JSON objects. Each JSON object represents a single criterion assessment and must conform to the following structure:
+    {
+      "api_name": "S3",
+      "api_domain_name": "s3.amazonaws.com",
+      "platform": "aws",
+      "is_endorsed": false,
+      "criterion_category": "...",
+      "criterion_name": "...",
+      "is_supported": boolean,
+      "caveats": "...",
+      "notes": "..."
+    }
+
+    **Field Definitions:**
+    - `api_name`: The friendly name of the API (e.g., "Cloud Storage").
+    - `api_domain_name`: The domain name of the API (e.g., "storage.googleapis.com").
+    - `platform`: The cloud platform identifier (e.g., "gcp", "aws", "azure").
+    - `is_endorsed`: Always set this to `false`. It is for internal use.
+    - `criterion_category`: The category of the criterion being assessed.
+    - `criterion_name`: The name of the specific criterion.
+    - `is_supported`: A boolean (`true` or `false`) indicating if the service meets the criterion.
+    - `caveats`: A brief, clear string explaining any limitations, conditions, or partial support. If fully supported, leave this empty. Examples: "Supported with limitations.", "Applicable for user accounts only."
+    - `notes`: A detailed, comprehensive explanation of *how* the service supports (or fails to support) the criterion. Provide specifics, including names of relevant features, configurations, or best practices.
+
+    **IMPORTANT:**
+    - Your final output must be **only the newline-delimited JSON objects**, with no surrounding text, explanations, or markdown formatting.
+    - Ensure each JSON object is on a new line.
+    - Base your assessment on publicly available documentation for the service.

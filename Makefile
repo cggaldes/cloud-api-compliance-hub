@@ -87,6 +87,21 @@ test-service:
 	@echo "\nTesting Cloud Storage assessment (JSON): $(CLOUD_RUN_URL)/api/v1/assessments/platforms/gcp/apis/storage.googleapis.com"
 	curl -s "$(CLOUD_RUN_URL)/api/v1/assessments/platforms/gcp/apis/storage.googleapis.com" | python3 -m json.tool
 
+# --- Contributor Targets for Managing Assessments ---
+
+new-assessment:
+	@if [ -z "$(PLATFORM)" ] || [ -z "$(SERVICE_NAME)" ] || [ -z "$(DOMAIN)" ]; then \
+	  echo "Error: PLATFORM, SERVICE_NAME, and DOMAIN must be provided."; \
+	  echo "Usage: make new-assessment PLATFORM=aws SERVICE_NAME=\"Amazon S3\" DOMAIN=s3.amazonaws.com"; \
+	  exit 1; \
+	fi
+	@echo "Generating new assessment files for $(SERVICE_NAME) on $(PLATFORM)..."
+	./venv/bin/python assess_new_api.py --platform "$(PLATFORM)" --service-name "$(SERVICE_NAME)" --domain "$(DOMAIN)"
+
+bq-load:
+	@echo "Loading all assessment data into BigQuery..."
+	./venv/bin/python setup_bq.py
+
 # --- Pulumi Targets for Workload Identity Federation Setup ---
 
 pulumi-install:
